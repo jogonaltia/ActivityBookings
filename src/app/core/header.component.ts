@@ -5,9 +5,11 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   standalone: true,
   imports: [],
   template: `
-    <p>
-      header works!
-    </p>
+    <header>
+      <nav>
+        <a href=""> Activity Bookings </a>
+      </nav>
+    </header>
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush

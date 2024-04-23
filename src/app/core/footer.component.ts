@@ -5,9 +5,12 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   standalone: true,
   imports: [],
   template: `
-    <p>
-      footer works!
-    </p>
+    <footer>
+      <nav>
+        <a [href]="" target="_blank"> © 2024 Jonatan Gonzalez </a>
+        <button>Accept Cookies</button>  
+      </nav>
+    </footer>
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush
