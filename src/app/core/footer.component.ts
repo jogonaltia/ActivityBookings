@@ -7,8 +7,8 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   template: `
     <footer>
       <nav>
-        <a [href]="" target="_blank"> © 2024 Jonatan Gonzalez </a>
-        <button>Accept Cookies</button>  
+        <a [href]="author.homepage" target="_blank"> © {{year}} {{author.name}} </a>
+        <button (click)="onCookiesAccepted()">Accept Cookies</button>  
       </nav>
     </footer>
   `,
@@ -16,5 +16,14 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FooterComponent {
+  author = {
+    name: 'Jonatan Gonzalez',
+    homepage: 'https://www.altia.es/'
+  };
 
+  year = new Date().getFullYear();
+
+  onCookiesAccepted() {
+    console.log('Cookies accepted');
+  }
 }

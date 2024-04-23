@@ -7,7 +7,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   template: `
     <header>
       <nav>
-        <a href=""> Activity Bookings </a>
+        <a href=""> {{title}} </a>
       </nav>
     </header>
   `,
@@ -15,5 +15,5 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeaderComponent {
-
+  title = 'Activity Bookings';
 }

@@ -17,5 +17,5 @@ import { FooterComponent } from './core/footer.component';
   styles: [],
 })
 export class AppComponent {
-  title = 'ActivityBookings';
+  
 }
