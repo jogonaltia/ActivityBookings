@@ -18,11 +18,36 @@ import { ActivityTitlePipe } from "./activity-title.pipe";
           <span>{{ activity.status | uppercase }}</span>
         </div>
       </header>
+      <main>
+        <div>Already Participants: {{ currentParticipants }}</div>
+      </main>
       <footer>
         <button>Book now!</button>
       </footer>
   `,
-    styles: ``,
+    styles: `
+      .draft {
+        color: violet;
+        font-style: italic;
+      }
+      .published {
+        color: limegreen;
+      }
+      .confirmed {
+        color: green;
+      }
+      .sold_out {
+        color: green;
+        font-style: italic;
+      }
+      .done {
+        color: orange;
+        font-style: italic;
+      }
+      .cancelled {
+        color: red;
+        font-style: italic;
+      }`,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BookingsComponent {
@@ -39,4 +64,5 @@ export class BookingsComponent {
     duration: 2,
     userId: 1,
   };
+  currentParticipants = 3;
 }
