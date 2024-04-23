@@ -12,6 +12,9 @@
           "inlineTemplate": true,
           "inlineStyle": true,
           "skipTests": true
+        },
+        "@schematics/angular:pipe": {
+          "skipTests": true
         }
       },
       "root": "",
