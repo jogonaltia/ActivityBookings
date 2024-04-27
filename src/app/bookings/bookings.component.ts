@@ -2,11 +2,12 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Activity } from '../domain/activity.type';
 import { CurrencyPipe, DatePipe, UpperCasePipe } from '@angular/common';
 import { ActivityTitlePipe } from "./activity-title.pipe";
+import { FormsModule } from '@angular/forms';
 
 @Component({
     selector: 'lab-bookings',
     standalone: true,
-    imports: [CurrencyPipe, DatePipe, UpperCasePipe, ActivityTitlePipe],
+    imports: [CurrencyPipe, DatePipe, UpperCasePipe, ActivityTitlePipe, FormsModule],
     template: `
     <article>
       <header>
@@ -20,8 +21,16 @@ import { ActivityTitlePipe } from "./activity-title.pipe";
       </header>
       <main>
         <div>Already Participants: {{ currentParticipants }}</div>
+        <div>New Participants: {{ newParticipants }}</div>
       </main>
       <footer>
+        <h4>New Bookings</h4>
+        <label for="newParticipants">How many participants want a book?</label>
+        <input
+          type="number"
+          [ngModel]="newParticipants"
+          (ngModelChange)="onNewParticipantsChange($event)"
+        />
         <button>Book now!</button>
       </footer>
   `,
@@ -65,4 +74,10 @@ export class BookingsComponent {
     userId: 1,
   };
   currentParticipants = 3;
+
+  newParticipants = 0;
+
+  onNewParticipantsChange(newParticipants:number) {
+    this.newParticipants = newParticipants
+  }
 }
