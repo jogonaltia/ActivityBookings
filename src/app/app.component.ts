@@ -2,16 +2,13 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './core/header.component';
 import { FooterComponent } from './core/footer.component';
-import { BookingsComponent } from './bookings/bookings.component';
 
 @Component({
   selector: 'lab-root',
   standalone: true,
-  imports: [RouterOutlet, HeaderComponent, FooterComponent, BookingsComponent],
+  imports: [RouterOutlet, HeaderComponent, FooterComponent],
   template: `
     <lab-header />
-    <lab-bookings />
-
     <router-outlet />
     <lab-footer/>
   `,

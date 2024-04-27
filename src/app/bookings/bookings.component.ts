@@ -5,7 +5,6 @@ import { ActivityTitlePipe } from "./activity-title.pipe";
 import { FormsModule } from '@angular/forms';
 
 @Component({
-    selector: 'lab-bookings',
     standalone: true,
     imports: [CurrencyPipe, DatePipe, UpperCasePipe, ActivityTitlePipe, FormsModule],
     template: `
