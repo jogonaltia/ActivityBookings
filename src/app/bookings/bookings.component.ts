@@ -30,14 +30,19 @@ import { FormsModule } from '@angular/forms';
       </main>
       <footer>
         <h4>New Bookings</h4>
-        <label for="newParticipants">How many participants want a book?</label>
-        <input
-          type="number"
-          [ngModel]="newParticipants()"
-          (ngModelChange)="onNewParticipantsChange($event)"
-          min="0"
-          [max]="maxParticipants"
-        />
+        @if(remainingPlaces() > 0) {
+          <label for="newParticipants">How many participants want a book?</label>
+          <input
+            type="number"
+            [ngModel]="newParticipants()"
+            (ngModelChange)="onNewParticipantsChange($event)"
+            min="0"
+            [max]="maxParticipants"
+          />
+        } @else {
+          <span>Sorry, no more places available!</span>
+          <button class="secondary outline" (click)="onNewParticipantsChange(0)">Reset</button>
+        }
         <button [disabled]="canNotBook()" (click)="onBookClick()">Book now for {{ bookingAmount() | currency }}!</button>
         {{ booked() ? 'Booked!' : '' }}
       </footer>
