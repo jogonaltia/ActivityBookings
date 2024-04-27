@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { Activity } from '../domain/activity.type';
 import { CurrencyPipe, DatePipe, UpperCasePipe } from '@angular/common';
 import { ActivityTitlePipe } from "./activity-title.pipe";
@@ -21,18 +21,20 @@ import { FormsModule } from '@angular/forms';
       </header>
       <main>
         <div>Already Participants: {{ currentParticipants }}</div>
-        <div>New Participants: {{ newParticipants }}</div>
+        <div>New Participants: {{ newParticipants() }}</div>
       </main>
       <footer>
         <h4>New Bookings</h4>
         <label for="newParticipants">How many participants want a book?</label>
         <input
           type="number"
-          [ngModel]="newParticipants"
+          [ngModel]="newParticipants()"
           (ngModelChange)="onNewParticipantsChange($event)"
         />
-        <button>Book now!</button>
+        <button [disabled]="booked()" (click)="onBookClick()">Book now!</button>
+        {{ booked() ? 'Booked!' : '' }}
       </footer>
+    </article>
   `,
     styles: `
       .draft {
@@ -75,9 +77,14 @@ export class BookingsComponent {
   };
   currentParticipants = 3;
 
-  newParticipants = 0;
+  newParticipants = signal(0);
+  booked = signal(false);
 
   onNewParticipantsChange(newParticipants:number) {
-    this.newParticipants = newParticipants
+    this.newParticipants.set(newParticipants);
+  }
+
+  onBookClick() {
+    this.booked.set(true);
   }
 }
