@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, signal } from '@angular/core';
 import { Activity } from '../domain/activity.type';
 import { CurrencyPipe, DatePipe, UpperCasePipe } from '@angular/common';
 import { ActivityTitlePipe } from "./activity-title.pipe";
@@ -93,6 +93,20 @@ export class BookingsComponent {
 
   readonly newParticipants = signal(0);
   readonly booked = signal(false);
+
+  constructor() {
+    effect(() => {
+      const totalParticipants = this.totalParticipants();
+      const activity = this.activity;
+      if (totalParticipants >= activity.maxParticipants) {
+        activity.status = 'sold-out';
+      } else if (totalParticipants >= activity.minParticipants) {
+        activity.status = 'confirmed';
+      } else {
+        activity.status = 'published';
+      }
+    });
+  }
 
   onNewParticipantsChange(newParticipants:number) {
     this.newParticipants.set(newParticipants);
