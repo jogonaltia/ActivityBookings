@@ -20,8 +20,16 @@ import { FormsModule } from '@angular/forms';
         </div>
       </header>
       <main>
-        <div>Already Participants: {{ currentParticipants }}</div>
-        <div>New Participants: {{ newParticipants() }}</div>
+        <h4>Participants</h4>
+        <div>Already Participants: {{ alreadyParticipants }}</div>
+        <ul>
+          <li>New Participants: {{ newParticipants() }}</li>
+          <li>Total Participants: {{ alreadyParticipants + newParticipants() }}</li>
+          <li>
+            Remaining places:
+            {{ activity.maxParticipants - (alreadyParticipants + newParticipants()) }}
+          </li>
+        </ul>
       </main>
       <footer>
         <h4>New Bookings</h4>
@@ -30,6 +38,8 @@ import { FormsModule } from '@angular/forms';
           type="number"
           [ngModel]="newParticipants()"
           (ngModelChange)="onNewParticipantsChange($event)"
+          min="0"
+          [max]="maxParticipants"
         />
         <button [disabled]="booked()" (click)="onBookClick()">Book now!</button>
         {{ booked() ? 'Booked!' : '' }}
@@ -65,17 +75,18 @@ export class BookingsComponent {
   activity: Activity = {
     name: 'Paddle surf',
     location: 'Lake Leman at Lausanne',
-    price: 100,
+    price: 125,
     date: new Date(2025, 7, 15),
-    minParticipants: 4,
-    maxParticipants: 10,
+    minParticipants: 5,
+    maxParticipants: 9,
     status: 'published',
     id: 1,
     slug: 'paddle-surf',
     duration: 2,
     userId: 1,
   };
-  currentParticipants = 3;
+  alreadyParticipants = 3;
+  maxParticipants = this.activity.maxParticipants - this.alreadyParticipants;
 
   newParticipants = signal(0);
   booked = signal(false);
