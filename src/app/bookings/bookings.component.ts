@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { Activity } from '../domain/activity.type';
 import { CurrencyPipe, DatePipe, UpperCasePipe } from '@angular/common';
 import { ActivityTitlePipe } from "./activity-title.pipe";
@@ -24,11 +24,8 @@ import { FormsModule } from '@angular/forms';
         <div>Already Participants: {{ alreadyParticipants }}</div>
         <ul>
           <li>New Participants: {{ newParticipants() }}</li>
-          <li>Total Participants: {{ alreadyParticipants + newParticipants() }}</li>
-          <li>
-            Remaining places:
-            {{ activity.maxParticipants - (alreadyParticipants + newParticipants()) }}
-          </li>
+          <li>Total Participants: {{ totalParticipants() }}</li>
+          <li>Remaining places: {{ remainingPlaces() }} </li>
         </ul>
       </main>
       <footer>
@@ -87,6 +84,9 @@ export class BookingsComponent {
   };
   alreadyParticipants = 3;
   maxParticipants = this.activity.maxParticipants - this.alreadyParticipants;
+
+  totalParticipants = computed(() => this.alreadyParticipants + this.newParticipants());
+  remainingPlaces = computed(() => this.activity.maxParticipants - this.totalParticipants());
 
   newParticipants = signal(0);
   booked = signal(false);
