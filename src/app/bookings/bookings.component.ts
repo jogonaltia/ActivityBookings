@@ -38,7 +38,7 @@ import { FormsModule } from '@angular/forms';
           min="0"
           [max]="maxParticipants"
         />
-        <button [disabled]="booked()" (click)="onBookClick()">Book now!</button>
+        <button [disabled]="canNotBook()" (click)="onBookClick()">Book now for {{ bookingAmount() | currency }}!</button>
         {{ booked() ? 'Booked!' : '' }}
       </footer>
     </article>
@@ -69,7 +69,7 @@ import { FormsModule } from '@angular/forms';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BookingsComponent {
-  activity: Activity = {
+  readonly activity: Activity = {
     name: 'Paddle surf',
     location: 'Lake Leman at Lausanne',
     price: 125,
@@ -82,14 +82,17 @@ export class BookingsComponent {
     duration: 2,
     userId: 1,
   };
-  alreadyParticipants = 3;
-  maxParticipants = this.activity.maxParticipants - this.alreadyParticipants;
+  readonly alreadyParticipants = 3;
+  readonly maxParticipants = this.activity.maxParticipants - this.alreadyParticipants;
 
-  totalParticipants = computed(() => this.alreadyParticipants + this.newParticipants());
-  remainingPlaces = computed(() => this.activity.maxParticipants - this.totalParticipants());
+  readonly totalParticipants = computed(() => this.alreadyParticipants + this.newParticipants());
+  readonly remainingPlaces = computed(() => this.activity.maxParticipants - this.totalParticipants());
 
-  newParticipants = signal(0);
-  booked = signal(false);
+  readonly canNotBook = computed(() => this.booked() || this.newParticipants() === 0);
+  readonly bookingAmount = computed(() => this.newParticipants() * this.activity.price);
+
+  readonly newParticipants = signal(0);
+  readonly booked = signal(false);
 
   onNewParticipantsChange(newParticipants:number) {
     this.newParticipants.set(newParticipants);
