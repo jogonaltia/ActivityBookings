@@ -1,8 +1,9 @@
-import { Component, computed, effect, input, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { NULL_ACTIVITY } from '../../domain/activity.type';
 import { CurrencyPipe, DatePipe, UpperCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ACTIVITIES } from '../../domain/activities.data';
+import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   standalone: true,
@@ -67,6 +68,9 @@ import { ACTIVITIES } from '../../domain/activities.data';
   `,
 })
 export default class BookingsPage {
+  #title = inject(Title);
+  #meta = inject(Meta);
+
   slug = input<string>();
   activity = computed(() => ACTIVITIES.find((a) => a.slug === this.slug()) || NULL_ACTIVITY);
 
@@ -88,6 +92,12 @@ export default class BookingsPage {
   });
 
   constructor() {
+    effect(() => {
+      const activity = this.activity();
+      this.#title.setTitle(activity.name);
+      const description = `${activity.name} in ${activity.location} on ${activity.date} for ${activity.price}`;
+      this.#meta.updateTag({ name: 'description', content: description})
+    });
     effect(
       () => {
         this.participants.update((participants) => {

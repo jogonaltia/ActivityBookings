@@ -1,7 +1,8 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ACTIVITIES } from '../domain/activities.data';
+import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   standalone: true,
@@ -29,5 +30,13 @@ import { ACTIVITIES } from '../domain/activities.data';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export default class HomePage {
+  #title = inject(Title);
+  #meta = inject(Meta);
+
   activities = ACTIVITIES;
+
+  constructor(){
+    this.#title.setTitle('Activities to book');
+    this.#meta.updateTag({ name: 'description', content: 'Book your favourite activities' });
+  }
 }
