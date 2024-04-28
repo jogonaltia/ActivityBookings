@@ -5,12 +5,12 @@ import { RouterLink } from '@angular/router';
   standalone: true,
   imports: [RouterLink],
   template: `
-    <p>login works!</p>
-    <a routerLink="/auth/register">Register</a>
+    <p>register works!</p>
+    <a routerLink="/auth/login">Login</a>
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export default class LoginComponent {
+export default class RegisterPage {
 
 }
