@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, effect, signal } from '@angular/core';
-import { Activity } from '../domain/activity.type';
+import { Activity } from '../../domain/activity.type';
 import { CurrencyPipe, DatePipe, UpperCasePipe } from '@angular/common';
 import { ActivityTitlePipe } from "./activity-title.pipe";
 import { FormsModule } from '@angular/forms';
@@ -79,7 +79,7 @@ import { FormsModule } from '@angular/forms';
       }`,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BookingsComponent {
+export default class BookingsPage {
   readonly activity: Activity = {
     name: 'Paddle surf',
     location: 'Lake Leman at Lausanne',
