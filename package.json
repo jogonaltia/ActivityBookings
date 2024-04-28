@@ -10,6 +10,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:ActivityBookings": "node dist/activity-bookings/server/server.mjs",
+    "serve": "npm run build && npm run serve:ssr:ActivityBookings",
     "lint": "ng lint"
   },
   "private": true,
