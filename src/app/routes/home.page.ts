@@ -3,6 +3,8 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ACTIVITIES } from '../domain/activities.data';
 import { Meta, Title } from '@angular/platform-browser';
+import { HttpClient } from '@angular/common/http';
+import { Activity } from '../domain/activity.type';
 
 @Component({
   standalone: true,
@@ -33,10 +35,17 @@ export default class HomePage {
   #title = inject(Title);
   #meta = inject(Meta);
 
-  activities = ACTIVITIES;
+  #apiUrl = 'http://localhost:3000/activities';
+
+  #httpClient$: HttpClient = inject(HttpClient);
+  activities: Activity[] = [];
 
   constructor(){
     this.#title.setTitle('Activities to book');
     this.#meta.updateTag({ name: 'description', content: 'Book your favourite activities' });
+
+    this.#httpClient$.get<Activity[]>(this.#apiUrl).subscribe((result) => {
+      this.activities = result;
+    });
   }
 }
