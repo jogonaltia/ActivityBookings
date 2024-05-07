@@ -1,9 +1,11 @@
 import { Component, computed, effect, inject, input, signal } from '@angular/core';
-import { NULL_ACTIVITY } from '../../domain/activity.type';
 import { CurrencyPipe, DatePipe, UpperCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ACTIVITIES } from '../../domain/activities.data';
 import { Meta, Title } from '@angular/platform-browser';
+import { HttpClient } from '@angular/common/http';
+import { Booking } from '../../domain/booking.type';
+import { Activity } from '../../domain/activity.type';
 
 @Component({
   standalone: true,
@@ -68,13 +70,17 @@ import { Meta, Title } from '@angular/platform-browser';
   `,
 })
 export default class BookingsPage {
+  #http$ = inject(HttpClient);
+  #activitiesUrl = 'http://localhost:3000/activities';
+  #bookingsUrl = 'http://localhost:3000/bookings';
+
   #title = inject(Title);
   #meta = inject(Meta);
 
   slug = input<string>();
-  activity = computed(() => ACTIVITIES.find((a) => a.slug === this.slug()) || NULL_ACTIVITY);
+  activity = computed(() => ACTIVITIES[3]);
 
-  alreadyParticipants = computed(() => Math.floor(Math.random() * this.activity().maxParticipants));
+  alreadyParticipants = computed(() => 0);
   maxParticipants = computed(() => this.activity().maxParticipants - this.alreadyParticipants());
   isBookable = computed(() => ['published', 'confirmed'].includes(this.activity().status));
 
@@ -139,5 +145,38 @@ export default class BookingsPage {
 
   onBookClick() {
     this.booked.set(true);
+
+    const newBooking: Booking = {
+      id: 0,
+      userId: 0,
+      activityId: this.activity().id,
+      date: new Date(),
+      participants: this.newParticipants(),
+      payment: {
+        method: 'creditCard',
+        amount: this.bookingAmount(),
+        status: 'pending',
+      },
+    };
+
+    this.#http$.post(this.#bookingsUrl, newBooking).subscribe({
+      next: (result) => {
+        console.log(result);
+        this.#updateActivityStatus();
+      },
+      error: (error) => {
+        console.error('Error creating booking', error);
+      },
+    });
   }
+
+  #updateActivityStatus() {
+    const activityUrl = `${this.#activitiesUrl}/${this.activity().id}`;
+    this.#http$.put<Activity>(activityUrl, this.activity()).subscribe({
+      next: () => console.log('Activity status updated'),
+      error: (error) => console.error('Error updating activity', error),
+    });
+
+  }
+
 }
