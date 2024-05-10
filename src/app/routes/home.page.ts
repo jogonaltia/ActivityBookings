@@ -1,5 +1,5 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
@@ -14,7 +14,7 @@ import { Activity } from '../domain/activity.type';
         <h2>Activities</h2>
       </header>
       <main>
-        @for (activity of activities; track activity.id) {
+        @for (activity of activities(); track activity.id) {
           <div>
             <span>
               <a [routerLink]="['/bookings', activity.slug]">{{ activity.name }}</a>
@@ -37,14 +37,14 @@ export default class HomePage {
   #apiUrl = 'http://localhost:3000/activities';
 
   #httpClient$: HttpClient = inject(HttpClient);
-  activities: Activity[] = [];
+  activities = signal<Activity[]>([]);
 
   constructor(){
     this.#title.setTitle('Activities to book');
     this.#meta.updateTag({ name: 'description', content: 'Book your favourite activities' });
 
     this.#httpClient$.get<Activity[]>(this.#apiUrl).subscribe((result) => {
-      this.activities = result;
+      this.activities.set(result);
     });
   }
 }
