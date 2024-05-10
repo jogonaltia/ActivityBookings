@@ -1,11 +1,10 @@
 import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { CurrencyPipe, DatePipe, UpperCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ACTIVITIES } from '../../domain/activities.data';
 import { Meta, Title } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
 import { Booking } from '../../domain/booking.type';
-import { Activity } from '../../domain/activity.type';
+import { Activity, NULL_ACTIVITY } from '../../domain/activity.type';
 
 @Component({
   standalone: true,
@@ -78,7 +77,7 @@ export default class BookingsPage {
   #meta = inject(Meta);
 
   slug = input<string>();
-  activity = computed(() => ACTIVITIES[3]);
+  activity = signal<Activity>(NULL_ACTIVITY);
 
   alreadyParticipants = computed(() => 0);
   maxParticipants = computed(() => this.activity().maxParticipants - this.alreadyParticipants());
@@ -98,6 +97,16 @@ export default class BookingsPage {
   });
 
   constructor() {
+    effect(() => {
+      const activityUrl = `${this.#activitiesUrl}?slug=${this.slug()}`;
+      this.#http$
+        .get<Activity[]>(activityUrl)
+        .subscribe((result) => this.activity.set(result[0] || NULL_ACTIVITY));
+    },
+    {
+      allowSignalWrites: true,
+    },
+    );
     effect(() => {
       const activity = this.activity();
       this.#title.setTitle(activity.name);
