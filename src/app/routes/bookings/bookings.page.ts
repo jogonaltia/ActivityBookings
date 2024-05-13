@@ -1,11 +1,12 @@
-import { Component, computed, effect, inject, input, signal } from '@angular/core';
+import { Component, InputSignal, Signal, WritableSignal, computed, effect, inject, input, signal } from '@angular/core';
 import { CurrencyPipe, DatePipe, UpperCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
 import { Booking } from '../../domain/booking.type';
 import { Activity, NULL_ACTIVITY } from '../../domain/activity.type';
-import { catchError, map, of } from 'rxjs';
+import { Observable, catchError, map, of, switchMap } from 'rxjs';
+import { toSignal, toObservable } from '@angular/core/rxjs-interop';
 
 @Component({
   standalone: true,
@@ -77,8 +78,24 @@ export default class BookingsPage {
   #title = inject(Title);
   #meta = inject(Meta);
 
-  slug = input<string>();
-  activity = signal<Activity>(NULL_ACTIVITY);
+  slug: InputSignal<string> = input.required<string>();
+
+  slug$: Observable<string> = toObservable(this.slug);
+  
+  activity$: Observable<Activity> = this.slug$.pipe(
+    switchMap((slug: string) => {
+      const activityUrl = `${this.#activitiesUrl}?slug=${slug}`;
+      return this.#http$.get<Activity[]>(activityUrl).pipe(
+        map((activities: Activity[]) => activities[0] || NULL_ACTIVITY),
+        catchError((error) => {
+          console.log('Error getting activity', error);
+          return of(NULL_ACTIVITY);
+        }),
+      );
+    }),
+  );
+
+  activity: Signal<Activity> = toSignal(this.activity$, { initialValue: NULL_ACTIVITY });
 
   alreadyParticipants = computed(() => 0);
   maxParticipants = computed(() => this.activity().maxParticipants - this.alreadyParticipants());
@@ -98,23 +115,6 @@ export default class BookingsPage {
   });
 
   constructor() {
-    effect(() => {
-      const activityUrl = `${this.#activitiesUrl}?slug=${this.slug()}`;
-      this.#http$
-        .get<Activity[]>(activityUrl)
-        .pipe(
-          map((activities: Activity[]) => activities[0] || NULL_ACTIVITY),
-          catchError((error) => {
-            console.log('Error getting activity', error);
-            return of(NULL_ACTIVITY);
-          })
-        ) 
-        .subscribe((activity: Activity) => this.activity.set(activity));
-    },
-    {
-      allowSignalWrites: true,
-    },
-    );
     effect(() => {
       const activity = this.activity();
       this.#title.setTitle(activity.name);
