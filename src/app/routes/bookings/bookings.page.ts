@@ -5,6 +5,7 @@ import { Meta, Title } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
 import { Booking } from '../../domain/booking.type';
 import { Activity, NULL_ACTIVITY } from '../../domain/activity.type';
+import { catchError, map, of } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -101,7 +102,14 @@ export default class BookingsPage {
       const activityUrl = `${this.#activitiesUrl}?slug=${this.slug()}`;
       this.#http$
         .get<Activity[]>(activityUrl)
-        .subscribe((result) => this.activity.set(result[0] || NULL_ACTIVITY));
+        .pipe(
+          map((activities: Activity[]) => activities[0] || NULL_ACTIVITY),
+          catchError((error) => {
+            console.log('Error getting activity', error);
+            return of(NULL_ACTIVITY);
+          })
+        ) 
+        .subscribe((activity: Activity) => this.activity.set(activity));
     },
     {
       allowSignalWrites: true,
