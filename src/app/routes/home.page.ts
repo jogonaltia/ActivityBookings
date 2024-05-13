@@ -1,9 +1,11 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Signal, WritableSignal, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
 import { Activity } from '../domain/activity.type';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { catchError, of } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -37,14 +39,13 @@ export default class HomePage {
   #apiUrl = 'http://localhost:3000/activities';
 
   #httpClient$: HttpClient = inject(HttpClient);
-  activities = signal<Activity[]>([]);
+  activities: Signal<Activity[]> = toSignal(
+    this.#httpClient$.get<Activity[]>(this.#apiUrl).pipe(catchError(() => of([]))),
+    { initialValue: []}
+  );
 
   constructor(){
     this.#title.setTitle('Activities to book');
     this.#meta.updateTag({ name: 'description', content: 'Book your favourite activities' });
-
-    this.#httpClient$.get<Activity[]>(this.#apiUrl).subscribe((result) => {
-      this.activities.set(result);
-    });
   }
 }
