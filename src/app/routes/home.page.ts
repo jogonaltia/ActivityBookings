@@ -1,5 +1,5 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Signal, WritableSignal, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Signal, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
@@ -17,14 +17,7 @@ import { catchError, of } from 'rxjs';
       </header>
       <main>
         @for (activity of activities(); track activity.id) {
-          <div>
-            <span>
-              <a [routerLink]="['/bookings', activity.slug]">{{ activity.name }}</a>
-            </span>
-            <span>{{ activity.location }}</span>
-            <span>{{ activity.price | currency }}</span>
-            <span>{{ activity.date | date:'dd-MMM-yyyy' }}</span>
-          </div>
+          
         }
       </main>
     </article>
