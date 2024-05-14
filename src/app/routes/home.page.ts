@@ -1,15 +1,14 @@
-import { CurrencyPipe, DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Signal, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
 import { Activity } from '../domain/activity.type';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, of } from 'rxjs';
+import { ActivityComponent } from './home/activity.component';
 
 @Component({
   standalone: true,
-  imports: [RouterLink, CurrencyPipe, DatePipe],
+  imports: [ActivityComponent],
   template: `
     <article>
       <header>
@@ -17,7 +16,7 @@ import { catchError, of } from 'rxjs';
       </header>
       <main>
         @for (activity of activities(); track activity.id) {
-          
+          <lab-activity [activity]="activity" />
         }
       </main>
     </article>

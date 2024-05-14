@@ -10,7 +10,7 @@ import { Activity } from '../../domain/activity.type';
   template: `
     <div>
       <span>
-        <a [routerLink]="['/bookings', activity().slug]">{{ activity.name }}</a>
+        <a [routerLink]="['/bookings', activity().slug]">{{ activity().name }}</a>
       </span>
       <span>{{ activity().location }}</span>
       <span>{{ activity().price | currency }}</span>
