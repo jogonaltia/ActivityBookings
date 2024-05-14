@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Signal, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Signal, WritableSignal, inject, signal } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
 import { Activity } from '../domain/activity.type';
@@ -16,10 +16,19 @@ import { ActivityComponent } from './home/activity.component';
       </header>
       <main>
         @for (activity of activities(); track activity.id) {
-          <lab-activity [activity]="activity" />
+          <lab-activity [activity]="activity" [(favorites)]="favorites" />
         }
       </main>
     </article>
+    <footer>
+        <small>
+          Showing
+          <mark>{{ activities().length }}</mark>
+          activities, you have selected
+          <mark>{{ favorites().length }}</mark>
+          favourites.
+        </small>
+    </footer>
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -40,4 +49,7 @@ export default class HomePage {
     this.#title.setTitle('Activities to book');
     this.#meta.updateTag({ name: 'description', content: 'Book your favourite activities' });
   }
+
+  favorites: WritableSignal<string[]> = signal([]);
+
 }

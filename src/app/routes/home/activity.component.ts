@@ -1,5 +1,5 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ModelSignal, input, model } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Activity } from '../../domain/activity.type';
 
@@ -9,6 +9,14 @@ import { Activity } from '../../domain/activity.type';
   imports: [RouterLink, CurrencyPipe, DatePipe],
   template: `
     <div>
+      <span>
+        <input
+          type="checkbox"
+          name=""
+          class="seconday outline"
+          (click)="toggleFavorite(activity().slug)"
+        />
+      </span>
       <span>
         <a [routerLink]="['/bookings', activity().slug]">{{ activity().name }}</a>
       </span>
@@ -22,4 +30,15 @@ import { Activity } from '../../domain/activity.type';
 })
 export class ActivityComponent {
   activity = input.required<Activity>();
+
+  favorites: ModelSignal<string[]> = model<string[]>([]);
+
+  toggleFavorite(slug: string): void {
+    this.favorites.update((favorites) => {
+      if(favorites.includes(slug)) {
+        return favorites.filter((favorite) => favorite !== slug);
+      }
+      return favorites.concat(slug);
+    });
+  }
 }
